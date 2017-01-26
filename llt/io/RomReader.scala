@@ -3,10 +3,23 @@ package llt.io
 import java.io.{ByteArrayOutputStream, File, FileInputStream, InputStream}
 import java.security.MessageDigest
 
+import llt.common.Level
+
 object RomReader {
+  // I don't know what's up with the ROM I have access to, but it's longer and has a different
+  // sha256 than the ones mentioned on datacrystal.
   final val RomSize = 262160
   final val RomSha256 = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
   final val LevelCount = 50  // lolo1 has 50 levels exactly
+
+  // Magic Numbers from http://datacrystal.romhacking.net/wiki/Adventures_of_Lolo:ROM_map
+  // These are all byte offsets from the beginning of the ROM (so I call them "Pointer")
+  final val RoomDataOffsetPointer = 0x3A6A
+  final val RoomDataLengthPointer = 0x3ACE
+  final val RoomDataBankPointer = 0x3B00
+
+  // Also, in my dump, the room data is much further in than what datacrystal mentions.
+  final val BaseRoomDataPointer = 0x20010
 }
 
 class RomReader (romDataStream: java.io.InputStream) {
@@ -26,12 +39,25 @@ class RomReader (romDataStream: java.io.InputStream) {
     sb.toString
   }
 
-  def loadLevels(): Int = {
+  def loadLevel(level: Int, romData: Array[Byte]): Level = {
+    require (0 <= level && level < 50)
+    val bankOffset = ( (0xFF & romData(RomReader.RoomDataOffsetPointer + level*2)) |
+                       ((0xFF & romData(RomReader.RoomDataOffsetPointer + level*2 + 1)) << 8))
+    val length = romData(RomReader.RoomDataLengthPointer + level) & 0xFF
+    val bank = romData(RomReader.RoomDataBankPointer + level) & 0xFF
+
+    // TODO(jdowdell) - dedup this against writing back the Level later
+    // decompress room level data from masterOffset + bank*0x1000 + bankOffset
+    val romLevelOffset = RomReader.BaseRoomDataPointer + bank*0x1000 + bankOffset
+    (Level.fromRomByteBlob(romData.slice(romLevelOffset, romLevelOffset+length))
+          .setLevelNumber(level))
+  }
+
+  def loadLevels() = {
     val bytes = loadRomFromStream(romDataStream)
 
-    // TODO(jdowdell) - Read 50 levels
-    println("First byte: " + bytes(0))
-    return 0
+    val levels = (0 to 50).map { i => loadLevel(i, bytes) }
+    0  // TODO(jdowdell) - return Levels object
   }
 
   def loadRomFromStream(inputStream : InputStream): Array[Byte] = {
