@@ -50,10 +50,18 @@ object Level {
     new Level(levelData)
   }
 
-  def fromRomByteBlob(bytes: Array[Byte]): Level = {
+  def fromByteIterator(it: Iterator[Byte]): Level = {
+    decompressTileStream(it.map( b => Tile.hexToTile( (0xFF & b) )))
+  }
+
+  def fromRomByteBlob(bytes: Seq[Byte]): Level = {
     // TODO - remove; but super useful for debugging for now
     // println(bytes.map("%02X" format _).mkString)
-    decompressTileStream(bytes.iterator.map( b => Tile.hexToTile( (0xFF & b) )))
+    fromByteIterator(bytes.iterator)
+  }
+
+  def fromRomHexDumpString(chars: String): Level = {
+    fromByteIterator(chars.grouped(2).map(s => Integer.parseInt(s, 16).toByte))
   }
 }
 
