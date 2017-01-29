@@ -36,7 +36,9 @@ class Rom (romData: Array[Byte]){
   }
 
   def loadLevels(): Any = {
-    val levels = (0 to 49).map { i => loadLevel(i) }
+    val levels = (0 to 0).map { i => loadLevel(i) }
+    val bytes = levels(0).toByteBlob.toArray
+    println(bytes.map("%02X" format _).mkString)
     levels
   }
 }

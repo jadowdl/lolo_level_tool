@@ -51,7 +51,7 @@ object Level {
   }
 
   def fromRomByteBlob(bytes: Array[Byte]): Level = {
-    println(bytes.map(b => Integer.toHexString(0xFF&b)).mkString(""))
+    println(bytes.map("%02X" format _).mkString)
     decompressTileStream(bytes.iterator.map( b => Tile.hexToTile( (0xFF & b) )))
   }
 }
@@ -79,13 +79,13 @@ class Level (tilesToCopy: Array[Array[Tile]]) {
     if (j < i)
       false
     else if (row1 == row2)
-      (tiles(row1).slice(i, j).reduce((a,b) => if(a==b) a else Tile.SENTINEL_TILE)
+      (tiles(row1).slice(i, j+1).reduce((a,b) => if(a==b) a else Tile.SENTINEL_TILE)
                                != Tile.SENTINEL_TILE)
     else if (row2 < Level.ROWS)
-      tiles(row1).slice(i, j) == tiles(row2).slice(i, j)
+      tiles(row1).slice(i, j+1) == tiles(row2).slice(i, j)
     else
       // "ROW 16" is all black.
-      (tiles(row1).slice(i, j).map(t => t == Tile.DEFAULT_BLACK).reduce((a,b) => a && b))
+      (tiles(row1).slice(i, j+1).foldLeft(true)((accum, t) => accum && t == Tile.DEFAULT_BLACK))
   }
 
   // Side effect - updates memoTable to have the entry for (i, j), columns inclusive on row `row`.
@@ -106,7 +106,7 @@ class Level (tilesToCopy: Array[Array[Tile]]) {
           val best = (i to (j-1)).map(k =>
             compressionDynProg(row, i, k, memoTable) ++ compressionDynProg(row, k+1, j, memoTable)
           ).reduce((a,b) => if(a.length < b.length) a else b)
-          if (tileStretchEqual(row, row, i, j) && 3 < best.length) {
+          if (tileStretchEqual(row, row, i, j) && 3 <= best.length) {
             ListBuffer[Tile](Tile.TILE_META_REPEAT_SPECIAL, Tile.hexToTile(j-i-2), tiles(row)(i))
           } else {
             best
@@ -121,7 +121,7 @@ class Level (tilesToCopy: Array[Array[Tile]]) {
   private def compressionDynProgEntry(row: Int) : ListBuffer[Tile] = {
     val memoTable: Map[(Int, Int), ListBuffer[Tile]] = Map()
     val v = compressionDynProg(row, 0, Level.COLUMNS-1, memoTable)
-    // println("DBG  row: " + +row+" => " + v)
+    println("DBG  row: " + +row+" => " + v)
     v
   }
 
