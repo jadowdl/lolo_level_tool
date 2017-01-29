@@ -26,8 +26,13 @@ object TileGroup {
   case object DON_MEDUSA_GROUP extends TileGroup(20, "Don Medusa", "TODO")
   case object MEDUSA_GROUP extends TileGroup(21, "Medusa", "TODO")
 
+  // These aren't tiles that can occur in a room but are instead directives used by the
+  // decompression algorithm.  They are only used by the level compression/decompression
+  // routines.
+  case object META_GROUP extends TileGroup(-1, "Meta", "")
+
   final val AllTileGroups: Set[TileGroup] = TreeSet(VOID_SPACE_GROUP, WALLS_GROUP, BOULDER_GROUP,
-      BUSH_GROUP, LAVA_GROUP, DON_MEDUSA_GROUP, MEDUSA_GROUP
+      BUSH_GROUP, LAVA_GROUP, DON_MEDUSA_GROUP, MEDUSA_GROUP, META_GROUP
   )
 }
 
@@ -298,22 +303,22 @@ object Tile {
   case object TILEED extends Tile(TileGroup.TODO_GROUP, "TODO", "TODO", "TODO", 0xED)
   case object TILEEE extends Tile(TileGroup.TODO_GROUP, "TODO", "TODO", "TODO", 0xEE)
   case object TILEEF extends Tile(TileGroup.TODO_GROUP, "TODO", "TODO", "TODO", 0xEF)
-  case object TILEF0 extends Tile(TileGroup.TODO_GROUP, "TODO", "TODO", "TODO", 0xF0)
-  case object TILEF1 extends Tile(TileGroup.TODO_GROUP, "TODO", "TODO", "TODO", 0xF1)
-  case object TILEF2 extends Tile(TileGroup.TODO_GROUP, "TODO", "TODO", "TODO", 0xF2)
-  case object TILEF3 extends Tile(TileGroup.TODO_GROUP, "TODO", "TODO", "TODO", 0xF3)
-  case object TILEF4 extends Tile(TileGroup.TODO_GROUP, "TODO", "TODO", "TODO", 0xF4)
-  case object TILEF5 extends Tile(TileGroup.TODO_GROUP, "TODO", "TODO", "TODO", 0xF5)
-  case object TILEF6 extends Tile(TileGroup.TODO_GROUP, "TODO", "TODO", "TODO", 0xF6)
-  case object TILEF7 extends Tile(TileGroup.TODO_GROUP, "TODO", "TODO", "TODO", 0xF7)
-  case object TILEF8 extends Tile(TileGroup.TODO_GROUP, "TODO", "TODO", "TODO", 0xF8)
-  case object TILEF9 extends Tile(TileGroup.TODO_GROUP, "TODO", "TODO", "TODO", 0xF9)
-  case object TILEFA extends Tile(TileGroup.TODO_GROUP, "TODO", "TODO", "TODO", 0xFA)
-  case object TILEFB extends Tile(TileGroup.TODO_GROUP, "TODO", "TODO", "TODO", 0xFB)
-  case object TILEFC extends Tile(TileGroup.TODO_GROUP, "TODO", "TODO", "TODO", 0xFC)
-  case object TILEFD extends Tile(TileGroup.TODO_GROUP, "TODO", "TODO", "TODO", 0xFD)
-  case object TILEFE extends Tile(TileGroup.TODO_GROUP, "TODO", "TODO", "TODO", 0xFE)
-  case object TILEFF extends Tile(TileGroup.TODO_GROUP, "TODO", "TODO", "TODO", 0xFF)
+  case object TILE_META_REPEAT_2 extends Tile(TileGroup.META_GROUP, "TODO", "TODO", "TODO", 0xF0)
+  case object TILE_META_REPEAT_3 extends Tile(TileGroup.META_GROUP, "TODO", "TODO", "TODO", 0xF1)
+  case object TILE_META_REPEAT_4 extends Tile(TileGroup.META_GROUP, "TODO", "TODO", "TODO", 0xF2)
+  case object TILE_META_REPEAT_5 extends Tile(TileGroup.META_GROUP, "TODO", "TODO", "TODO", 0xF3)
+  case object TILE_META_REPEAT_6 extends Tile(TileGroup.META_GROUP, "TODO", "TODO", "TODO", 0xF4)
+  case object TILE_META_REPEAT_7 extends Tile(TileGroup.META_GROUP, "TODO", "TODO", "TODO", 0xF5)
+  case object TILE_META_REPEAT_8 extends Tile(TileGroup.META_GROUP, "TODO", "TODO", "TODO", 0xF6)
+  case object TILE_META_REPEAT_9 extends Tile(TileGroup.META_GROUP, "TODO", "TODO", "TODO", 0xF7)
+  case object TILE_META_REPEAT_10 extends Tile(TileGroup.META_GROUP, "TODO", "TODO", "TODO", 0xF8)
+  case object TILE_META_REPEAT_11 extends Tile(TileGroup.META_GROUP, "TODO", "TODO", "TODO", 0xF9)
+  case object TILE_META_REPEAT_12 extends Tile(TileGroup.META_GROUP, "TODO", "TODO", "TODO", 0xFA)
+  case object TILE_META_REPEAT_13 extends Tile(TileGroup.META_GROUP, "TODO", "TODO", "TODO", 0xFB)
+  case object TILE_META_REPEAT_14 extends Tile(TileGroup.META_GROUP, "TODO", "TODO", "TODO", 0xFC)
+  case object TILE_META_REPEAT_15 extends Tile(TileGroup.META_GROUP, "TODO", "TODO", "TODO", 0xFD)
+  case object TILE_META_REPEAT_16 extends Tile(TileGroup.META_GROUP, "TODO", "TODO", "TODO", 0xFE)
+  case object TILE_META_REPEAT_SPECIAL extends Tile(TileGroup.META_GROUP, "TODO", "TODO", "TODO", 0xFF)
 
   case object DON_MEDUSA_UP extends Tile(TileGroup.DON_MEDUSA_GROUP, "DON MEDUSA (UP)",
       "TODO", "Don Medusa initially traveling up", 0x90)
@@ -333,7 +338,33 @@ object Tile {
   case object MEDUSA_LEFT extends Tile(TileGroup.MEDUSA_GROUP, "MEDUSA (LEFT)",
       "TODO", "Medusa (directionality ignored by game; all four are the same)", 0x97)
 
-  final val AllTiles: Set[Tile] = TreeSet(DON_MEDUSA_UP, DON_MEDUSA_RIGHT, DON_MEDUSA_DOWN,
-      DON_MEDUSA_LEFT, MEDUSA_UP, MEDUSA_RIGHT, MEDUSA_DOWN, MEDUSA_LEFT
+  final val AllTiles: Set[Tile] = TreeSet(
+    DEFAULT_BLACK, WALLS01, WALLS02, WALLS03, WALLS04, WALLS05, WALLS06, WALLS07, WALLS08,
+    WALLS09, WALLS0A, WALLS0B, WALLS0C, BOULDER, BUSH, LAVA, TILE10, TILE11, TILE12, TILE13,
+    TILE14, TILE15, TILE16, TILE17, TILE18, TILE19, TILE1A, TILE1B, TILE1C, TILE1D, TILE1E,
+    TILE1F, TILE20, TILE21, TILE22, TILE23, TILE24, TILE25, TILE26, TILE27, TILE28, TILE29,
+    TILE2A, TILE2B, TILE2C, TILE2D, TILE2E, TILE2F, TILE30, TILE31, TILE32, TILE33, TILE34,
+    TILE35, TILE36, TILE37, TILE38, TILE39, TILE3A, TILE3B, TILE3C, TILE3D, TILE3E, TILE3F,
+    TILE40, TILE41, TILE42, TILE43, TILE44, TILE45, TILE46, TILE47, TILE48, TILE49, TILE4A,
+    TILE4B, TILE4C, TILE4D, TILE4E, TILE4F, TILE50, TILE51, TILE52, TILE53, TILE54, TILE55,
+    TILE56, TILE57, TILE58, TILE59, TILE5A, TILE5B, TILE5C, TILE5D, TILE5E, TILE5F, TILE60,
+    TILE61, TILE62, TILE63, TILE64, TILE65, TILE66, TILE67, TILE68, TILE69, TILE6A, TILE6B,
+    TILE6C, TILE6D, TILE6E, TILE6F, TILE70, TILE71, TILE72, TILE73, TILE74, TILE75, TILE76,
+    TILE77, TILE78, TILE79, TILE7A, TILE7B, TILE7C, TILE7D, TILE7E, TILE7F, TILE80, TILE81,
+    TILE82, TILE83, TILE84, TILE85, TILE86, TILE87, TILE88, TILE89, TILE8A, TILE8B, TILE8C,
+    TILE8D, TILE8E, TILE8F, TILE90, TILE98, TILE99, TILE9A, TILE9B, TILE9C, TILE9D, TILE9E,
+    TILE9F, TILEA0, TILEA1, TILEA2, TILEA3, TILEA4, TILEA5, TILEA6, TILEA7, TILEA8, TILEA9,
+    TILEAA, TILEAB, TILEAC, TILEAD, TILEAE, TILEAF, TILEB0, TILEB1, TILEB2, TILEB3, TILEB4,
+    TILEB5, TILEB6, TILEB7, TILEB8, TILEB9, TILEBA, TILEBB, TILEBC, TILEBD, TILEBE, TILEBF,
+    TILEC0, TILEC1, TILEC2, TILEC3, TILEC4, TILEC5, TILEC6, TILEC7, TILEC8, TILEC9, TILECA,
+    TILECB, TILECC, TILECD, TILECE, TILECF, TILED0, TILED1, TILED2, TILED3, TILED4, TILED5,
+    TILED6, TILED7, TILED8, TILED9, TILEDA, TILEDB, TILEDC, TILEDD, TILEDE, TILEDF, TILEE0,
+    TILEE1, TILEE2, TILEE3, TILEE4, TILEE5, TILEE6, TILEE7, TILEE8, TILEE9, TILEEA, TILEEB,
+    TILEEC, TILEED, TILEEE, TILEEF, TILE_META_REPEAT_2, TILE_META_REPEAT_3, TILE_META_REPEAT_4,
+    TILE_META_REPEAT_5, TILE_META_REPEAT_6, TILE_META_REPEAT_7, TILE_META_REPEAT_8,
+    TILE_META_REPEAT_9, TILE_META_REPEAT_10, TILE_META_REPEAT_11, TILE_META_REPEAT_12,
+    TILE_META_REPEAT_13, TILE_META_REPEAT_14, TILE_META_REPEAT_15, TILE_META_REPEAT_16,
+    TILE_META_REPEAT_SPECIAL, DON_MEDUSA_UP, DON_MEDUSA_RIGHT, DON_MEDUSA_DOWN, DON_MEDUSA_LEFT,
+    MEDUSA_UP, MEDUSA_RIGHT, MEDUSA_DOWN, MEDUSA_LEFT
   )
 }
