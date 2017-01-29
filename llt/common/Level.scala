@@ -1,7 +1,6 @@
 package llt.common
 
-import scala.collection.mutable.Queue
-import scala.collection.mutable.ListBuffer
+import scala.collection.mutable.{Queue, ListBuffer, Map}
 
 // import llt.common.{Tile, TileGroup}
 
@@ -52,7 +51,7 @@ object Level {
   }
 
   def fromRomByteBlob(bytes: Array[Byte]): Level = {
-    // println("DBG Level: " + bytes.map(b => Integer.toHexString(0xFF&b)).mkString(""))
+    println(bytes.map(b => Integer.toHexString(0xFF&b)).mkString(""))
     decompressTileStream(bytes.iterator.map( b => Tile.hexToTile( (0xFF & b) )))
   }
 }
@@ -72,5 +71,65 @@ class Level (tilesToCopy: Array[Array[Tile]]) {
   def setLevelNumber(level: Int): Level = {
     this.level = level
     this
+  }
+
+  // Compares each column piecewise between row1 and row2 from i..j, unless row1==row2 in which
+  // case we check that all tiles are the same (abuse of notation)
+  private def tileStretchEqual(row1: Int, row2: Int, i: Int, j: Int): Boolean = {
+    if (j < i)
+      false
+    else if (row1 == row2)
+      (tiles(row1).slice(i, j).reduce((a,b) => if(a==b) a else Tile.SENTINEL_TILE)
+                               != Tile.SENTINEL_TILE)
+    else if (row2 < Level.ROWS)
+      tiles(row1).slice(i, j) == tiles(row2).slice(i, j)
+    else
+      // "ROW 16" is all black.
+      (tiles(row1).slice(i, j).map(t => t == Tile.DEFAULT_BLACK).reduce((a,b) => a && b))
+  }
+
+  // Side effect - updates memoTable to have the entry for (i, j), columns inclusive on row `row`.
+  // calculates all other entries needed recursively.
+  private def compressionDynProg(row: Int, i: Int, j: Int,
+                                 memoTable: Map[(Int, Int), ListBuffer[Tile]]): ListBuffer[Tile] = {
+    require(j >= i)
+    if (memoTable.contains((i, j))) {
+      memoTable((i, j))
+    } else {
+      // Fill the memoTable with the result
+      val result = (
+        if (i==j) {
+          ListBuffer[Tile](tiles(row)(i))
+        } else if (tileStretchEqual(row, row+1, i, j)) {
+          ListBuffer[Tile](Tile.hexToTile(0xEF + j-i))
+        } else {
+          val best = (i to (j-1)).map(k =>
+            compressionDynProg(row, i, k, memoTable) ++ compressionDynProg(row, k+1, j, memoTable)
+          ).reduce((a,b) => if(a.length < b.length) a else b)
+          if (tileStretchEqual(row, row, i, j) && 3 < best.length) {
+            ListBuffer[Tile](Tile.TILE_META_REPEAT_SPECIAL, Tile.hexToTile(j-i-2), tiles(row)(i))
+          } else {
+            best
+          }
+        }
+      )
+      memoTable += (i,j) -> result
+      result
+    }
+  }
+
+  private def compressionDynProgEntry(row: Int) : ListBuffer[Tile] = {
+    val memoTable: Map[(Int, Int), ListBuffer[Tile]] = Map()
+    val v = compressionDynProg(row, 0, Level.COLUMNS-1, memoTable)
+    // println("DBG  row: " + +row+" => " + v)
+    v
+  }
+
+  def toCompressedTileStream() : Iterator[Tile] = {
+    ((Level.ROWS-1) to 0 by -1).map(compressionDynProgEntry).reduce((a,b)=>a++b).iterator
+  }
+
+  def toByteBlob() : Iterator[Byte] = {
+    toCompressedTileStream().map(a => a.hexCode.toByte)
   }
 }
