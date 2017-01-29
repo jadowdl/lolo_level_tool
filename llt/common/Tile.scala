@@ -367,4 +367,10 @@ object Tile {
     TILE_META_REPEAT_SPECIAL, DON_MEDUSA_UP, DON_MEDUSA_RIGHT, DON_MEDUSA_DOWN, DON_MEDUSA_LEFT,
     MEDUSA_UP, MEDUSA_RIGHT, MEDUSA_DOWN, MEDUSA_LEFT
   )
+
+  private val iterTileSet = (m: Map[Int, Tile], t: Tile) => m + (t.hexCode -> t)
+  private final val Hex2Tile: Map[Int, Tile] = AllTiles.foldLeft(Map.empty[Int,Tile])(iterTileSet)
+// (AllTiles map { i => (i.hexCode -> i) }).toMap()
+ 
+  def hexToTile(hexCode: Int): Tile = Hex2Tile(hexCode)
 }
