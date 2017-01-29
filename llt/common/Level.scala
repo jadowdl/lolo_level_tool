@@ -35,6 +35,16 @@ object Level {
 
     while(stream.hasNext) {
       val tile = stream.next
+
+      // In the rom you can rewrite a level and pad the end of a stream with junk; the game will
+      // stop reading once it's filled up the room with tiles and ignore the extra stuff.  With
+      // canonical level data though this doesn't happen, and I'd rather be too strict and catch
+      // other mistakes than be lenient and try to do the right thing.
+      if (arrayMultiIndex/COLUMNS >= ROWS) {
+        throw new Exception("room pointer out of bounds - failed to decompress level data (you" +
+                            "sure you got the right start and stop location?)")
+      }
+
       if (tile == Tile.TILE_META_REPEAT_SPECIAL) {
         // Next two "tiles" are actually tile to repeat, and count of times to repeat it, -2
         val repeatCount = stream.next().hexCode + 2
