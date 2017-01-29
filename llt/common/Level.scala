@@ -74,18 +74,22 @@ class Level (tilesToCopy: Array[Array[Tile]]) {
   }
 
   // Compares each column piecewise between row1 and row2 from i..j, unless row1==row2 in which
-  // case we check that all tiles are the same (abuse of notation)
+  // case we check that all tiles are the same (abuse of notation).  i..j is inclusive.
   private def tileStretchEqual(row1: Int, row2: Int, i: Int, j: Int): Boolean = {
-    if (j < i)
+    if (j < i) {
       false
-    else if (row1 == row2)
+    }
+    else if (row1 == row2) {
       (tiles(row1).slice(i, j+1).reduce((a,b) => if(a==b) a else Tile.SENTINEL_TILE)
                                != Tile.SENTINEL_TILE)
-    else if (row2 < Level.ROWS)
-      tiles(row1).slice(i, j+1) == tiles(row2).slice(i, j)
-    else
+    }
+    else if (row2 < Level.ROWS) {
+      tiles(row1).slice(i, j+1).sameElements(tiles(row2).slice(i, j+1))
+    }
+    else {
       // "ROW 16" is all black.
-      (tiles(row1).slice(i, j+1).foldLeft(true)((accum, t) => accum && t == Tile.DEFAULT_BLACK))
+      (tiles(row1).slice(i, j+1).foldLeft(true)((accum, t) => accum && (t == Tile.DEFAULT_BLACK)))
+    }
   }
 
   // Side effect - updates memoTable to have the entry for (i, j), columns inclusive on row `row`.
