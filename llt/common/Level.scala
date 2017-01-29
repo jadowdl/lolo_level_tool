@@ -51,7 +51,8 @@ object Level {
   }
 
   def fromRomByteBlob(bytes: Array[Byte]): Level = {
-    println(bytes.map("%02X" format _).mkString)
+    // TODO - remove; but super useful for debugging for now
+    // println(bytes.map("%02X" format _).mkString)
     decompressTileStream(bytes.iterator.map( b => Tile.hexToTile( (0xFF & b) )))
   }
 }

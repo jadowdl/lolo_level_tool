@@ -36,9 +36,27 @@ class Rom (romData: Array[Byte]){
   }
 
   def loadLevels(): Any = {
-    val levels = (0 to 0).map { i => loadLevel(i) }
-    val bytes = levels(0).toByteBlob.toArray
-    println(bytes.map("%02X" format _).mkString)
+    val levels = (0 until 50).map { i => loadLevel(i) }
     levels
+  }
+
+  private def doPatchLevels(levels:Seq[Level], dryRun: Boolean) {
+
+  }
+
+  def patchLevels(levels: Seq[Level]) {
+    require(levels.length == 50, "There must be exactly 50 levels to patch in")
+
+    // do a dryRun first to make sure we wouldn't corrupt the ROM by applying the patch
+    try {
+      doPatchLevels(levels, true)
+    } catch {
+      case ex: IllegalArgumentException => {
+        throw new RuntimeException("This set of levels won't compress enough to fit!")
+      }
+    }
+
+    // now do it for real
+    doPatchLevels(levels, false)
   }
 }
