@@ -320,6 +320,9 @@ object Tile {
   case object TILE_META_REPEAT_16 extends Tile(TileGroup.META_GROUP, "TODO", "TODO", "TODO", 0xFE)
   case object TILE_META_REPEAT_SPECIAL extends Tile(TileGroup.META_GROUP, "TODO", "TODO", "TODO", 0xFF)
 
+  // Not a real Tile, can't ever occur in the Rom.
+  case object SENTINEL_TILE extends Tile(TileGroup.TODO_GROUP, "TODO", "TODO", "TODO", 0x100)
+
   case object DON_MEDUSA_UP extends Tile(TileGroup.DON_MEDUSA_GROUP, "DON MEDUSA (UP)",
       "TODO", "Don Medusa initially traveling up", 0x90)
   case object DON_MEDUSA_RIGHT extends Tile(TileGroup.DON_MEDUSA_GROUP, "DON MEDUSA (RIGHT)",
@@ -366,7 +369,8 @@ object Tile {
     TILE_META_REPEAT_8, TILE_META_REPEAT_9, TILE_META_REPEAT_10, TILE_META_REPEAT_11,
     TILE_META_REPEAT_12, TILE_META_REPEAT_13, TILE_META_REPEAT_14, TILE_META_REPEAT_15,
     TILE_META_REPEAT_16, TILE_META_REPEAT_SPECIAL, DON_MEDUSA_UP, DON_MEDUSA_RIGHT,
-    DON_MEDUSA_DOWN, DON_MEDUSA_LEFT, MEDUSA_UP, MEDUSA_RIGHT, MEDUSA_DOWN, MEDUSA_LEFT
+    DON_MEDUSA_DOWN, DON_MEDUSA_LEFT, MEDUSA_UP, MEDUSA_RIGHT, MEDUSA_DOWN, MEDUSA_LEFT,
+    SENTINEL_TILE
   )
 
   private final val Hex2Tile: Map[Int, Tile] = (AllTiles.view.map(t => t.hexCode -> t)).toMap
