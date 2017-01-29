@@ -111,7 +111,7 @@ class Level (tilesToCopy: Array[Array[Tile]]) {
             compressionDynProg(row, i, k, memoTable) ++ compressionDynProg(row, k+1, j, memoTable)
           ).reduce((a,b) => if(a.length < b.length) a else b)
           if (tileStretchEqual(row, row, i, j) && 3 <= best.length) {
-            ListBuffer[Tile](Tile.TILE_META_REPEAT_SPECIAL, Tile.hexToTile(j-i-2), tiles(row)(i))
+            ListBuffer[Tile](Tile.TILE_META_REPEAT_SPECIAL, Tile.hexToTile(j-i-1), tiles(row)(i))
           } else {
             best
           }
@@ -124,9 +124,7 @@ class Level (tilesToCopy: Array[Array[Tile]]) {
 
   private def compressionDynProgEntry(row: Int) : ListBuffer[Tile] = {
     val memoTable: Map[(Int, Int), ListBuffer[Tile]] = Map()
-    val v = compressionDynProg(row, 0, Level.COLUMNS-1, memoTable)
-    println("DBG  row: " + +row+" => " + v)
-    v
+    compressionDynProg(row, 0, Level.COLUMNS-1, memoTable)
   }
 
   def toCompressedTileStream() : Iterator[Tile] = {
