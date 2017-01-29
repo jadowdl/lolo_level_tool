@@ -55,7 +55,7 @@ class Rom (romData: Array[Byte]){
     var levelNumber = 0
 
     for (level <- levels) {
-      val data = level.toByteBlob
+      val data = level.toByteBlob.toArray
 
       // patch in if this is not a test - this is the opposite of loadLevel()
       if (!dryRun) {
