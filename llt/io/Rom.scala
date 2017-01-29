@@ -36,7 +36,7 @@ class Rom (romData: Array[Byte]){
   }
 
   def loadLevels(): Any = {
-    val levels = (0 to 50).map { i => loadLevel(i) }
+    val levels = (0 to 49).map { i => loadLevel(i) }
     levels
   }
 }
