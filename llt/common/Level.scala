@@ -153,4 +153,17 @@ class Level (tilesToCopy: Array[Array[Tile]]) {
   def toByteBlob() : Iterator[Byte] = {
     toCompressedTileStream().map(a => a.hexCode.toByte)
   }
+
+  // Convenience function, for debugging.  Prints out the rows REVERSED from the order they occur
+  // in the ROM as, so that the hex dump looks like the room (top left corner of output is top left
+  // corner of room).  Consider `.grouped(32).foreach(println)` to get it in a 15x16 ascii grid. If
+  // you wanted to turn that around and pass it in for Level.fromRomHexDumpString you'd then need
+  // to pass that 15x16 through the `tac` command and then join it back together as a single blob.
+  def toDecompressedRowReversedHexDump() : String = {
+    ((0 until Level.ROWS) flatMap {
+      row => tiles(row).map {
+        tile => "%02X" format tile.hexCode
+      }
+    }).mkString("")
+  }
 }
