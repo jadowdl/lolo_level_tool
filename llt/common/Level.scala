@@ -82,6 +82,9 @@ class Level (tilesToCopy: Array[Array[Tile]]) {
   require(tilesToCopy.length == Level.ROWS, Level.WRONG_DIMS_ERROR_MSG)
   for (i <- 0.to(Level.ROWS-1)) {
     require(tilesToCopy(i).length == Level.COLUMNS, Level.WRONG_DIMS_ERROR_MSG)
+    for (j <- 0.to(Level.COLUMNS-1)) {
+      require(tilesToCopy(i)(j) != null, s"Tile may not be null @Level $level, row=$i col=$j")
+    }
   }
 
   val tiles = tilesToCopy.map(_.clone)

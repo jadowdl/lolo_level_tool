@@ -20,7 +20,7 @@ object Rom {
   final val RoomDataBankPointer = 0x3B00
 
   // Also, in my dump, the room data is much further in than what datacrystal mentions.
-  final val BaseRoomDataPointer = 0xD010
+  final val BaseRoomDataPointer = 0x8010
 
   // I'm not sure, but I think actually when we go to write the rom back out, we could start
   // from 0x00 rather than 0x10.  But for now, I write to the same parts of the bank that the
