@@ -3,10 +3,14 @@ package llt.io
 import llt.common.Level
 
 object Rom {
+  // TODO(jdowdell) - refactor to clarify that these are for the canonical ROM, not for the patched
+  // ROM.
+  //
   // I don't know what's up with the ROM I have access to, but it's longer and has a different
   // sha256 than the ones mentioned on datacrystal.
-  final val RomSize = 262160
-  final val RomSha256 = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  final val RomSize = 65552
+  final val RomSha256 = "914C676959612FC6738A297B6B799DFF848E43DE4E9BD3C9F3C6783EFD059E01"
+
   final val LevelCount = 50  // lolo1 has 50 levels exactly
 
   // Magic Numbers from http://datacrystal.romhacking.net/wiki/Adventures_of_Lolo:ROM_map
@@ -16,7 +20,7 @@ object Rom {
   final val RoomDataBankPointer = 0x3B00
 
   // Also, in my dump, the room data is much further in than what datacrystal mentions.
-  final val BaseRoomDataPointer = 0x20010
+  final val BaseRoomDataPointer = 0xD010
 
   // I'm not sure, but I think actually when we go to write the rom back out, we could start
   // from 0x00 rather than 0x10.  But for now, I write to the same parts of the bank that the
