@@ -18,7 +18,7 @@ class RomReader (romDataStream: java.io.InputStream) {
   private def digest2HexStr(md: MessageDigest): String = {
     val bytes = md.digest
     val sb = new StringBuffer()
-    md.digest.map( b => sb.append(Integer.toHexString( b & 0xFF )))
+    bytes.map( b => sb.append("%02X".format(b & 0xFF)))
     sb.toString
   }
 
